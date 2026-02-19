@@ -6,9 +6,9 @@
     "scripts": {
         "build": "webpack --color --mode production",
         "build:dev": "webpack --color --mode development",
-        "start": "QT_PLUGIN_PATH=/usr/lib/qt6/plugins QT_STYLE_OVERRIDE=breeze qode dist/index.js",
-        "dev": "yarn build:dev && QT_PLUGIN_PATH=/usr/lib/qt6/plugins QT_STYLE_OVERRIDE=breeze NODE_ENV=development qode dist/index.js",
-        "watch": "concurrently -k -n webpack,qode -c blue,green \"webpack --color --mode development --watch\" \"nodemon --watch dist --delay 1 --exec 'QT_PLUGIN_PATH=/usr/lib/qt6/plugins QT_STYLE_OVERRIDE=breeze NODE_ENV=development qode dist/index.js'\"",
+        "start": "qode dist/index.js",
+        "dev": "yarn build:dev && NODE_ENV=development qode dist/index.js",
+        "watch": "concurrently -k -n webpack,qode -c blue,green \"webpack --color --mode development --watch\" \"nodemon --watch dist --delay 1 --exec 'NODE_ENV=development qode dist/index.js'\"",
         "prettier": "prettier --check .",
         "prettier:fix": "prettier --write .",
         "prepare": "husky",
