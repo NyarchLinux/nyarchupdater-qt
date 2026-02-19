@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Nyarch Updater
+Exec=AppRun %F
+Icon=default
+Comment=Keep your system up to date with Nyarch Updater
+Terminal=true
+Categories=Utility;

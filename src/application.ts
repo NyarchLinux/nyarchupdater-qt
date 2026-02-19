@@ -3,7 +3,7 @@ import { MainWindow } from "./windows/main";
 import { paths } from "./utils/paths";
 import { FIRST_RUN_PATH } from "./utils/constants";
 import { existsSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
+import { writeFile, mkdir } from "node:fs/promises";
 import { KeyManager } from "./utils/key-manager";
 import { UpdatesManager } from "./utils/updates-manager";
 
@@ -30,12 +30,15 @@ export class Application {
             await this.handleFirstStart();
         }
 
-        this.window = new MainWindow();
+        this.window = new MainWindow(this);
         this.window.show();
     }
 
     async handleFirstStart() {
+        await mkdir(paths.data, { recursive: true });
         await writeFile(FIRST_RUN_PATH, "false");
-        await this.keyManager.importKey();
+        await this.keyManager.importKey().catch((err) => {
+            console.error("Error importing GPG key on first start:", err);
+        });
     }
 }

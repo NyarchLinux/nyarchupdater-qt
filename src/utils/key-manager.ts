@@ -1,9 +1,10 @@
 import { join } from "path";
 import { paths } from "./paths";
 import { exec } from "node:child_process";
+import { ASSETS_PATH } from "./constants";
 
 export class KeyManager {
-    public path = join(paths.data, "public.asc");
+    public path = join(ASSETS_PATH, "public.asc");
     public updatesLink = "https://nyarchlinux.moe/update.json";
 
     /**

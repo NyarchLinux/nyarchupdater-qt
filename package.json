@@ -4,12 +4,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc",
-        "start": "node dist/index.js",
-        "dev": "tsx watch src/index",
+        "build": "webpack --color --mode production",
+        "build:dev": "webpack --color --mode development",
+        "start": "qode dist/index.js",
+        "dev": "yarn build:dev && NODE_ENV=development qode dist/index.js",
         "prettier": "prettier --check .",
         "prettier:fix": "prettier --write .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "package": "yarn build && nodegui-packer --pack ./dist"
     },
     "private": true,
     "packageManager": "yarn@1.22.22",
@@ -18,14 +20,28 @@
         "env-paths": "^4.0.0"
     },
     "devDependencies": {
+        "@nodegui/packer": "^1.5.0",
         "@types/node": "^25.3.0",
+        "clean-webpack-plugin": "^4.0.0",
+        "copy-webpack-plugin": "^13.0.1",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.7",
+        "native-addon-loader": "^2.0.1",
         "prettier": "3.8.1",
+        "terser-webpack-plugin": "^5.3.16",
+        "thread-loader": "^4.0.4",
+        "ts-loader": "^9.5.4",
         "tsx": "^4.21.0",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "webpack": "^5.105.2",
+        "webpack-cli": "^6.0.1"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
-    }
+    },
+    "files": [
+        "/assets",
+        "/src",
+        "tsconfig.json"
+    ]
 }
