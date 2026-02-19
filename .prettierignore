@@ -1,0 +1,11 @@
+# Ignore artifacts:
+dist
+build
+coverage
+node_modules
+**/*.js
+**/.git
+**/.svn
+**/.hg
+.idea
+.husky
