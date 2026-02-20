@@ -1,12 +1,3 @@
-// Load system Qt plugins (Breeze style) before any Qt import
-process.env.QT_PLUGIN_PATH = [
-    process.env.QT_PLUGIN_PATH,
-    "/usr/lib/qt6/plugins",
-]
-    .filter(Boolean)
-    .join(":");
-process.env.QT_STYLE_OVERRIDE = "breeze";
-
 import { Application } from "./application";
 
 const app = new Application();

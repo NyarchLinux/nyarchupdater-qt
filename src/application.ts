@@ -6,6 +6,7 @@ import { existsSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { KeyManager } from "./utils/key-manager";
 import { UpdatesManager } from "./utils/updates-manager";
+import globalStyles from "./styles/global.qss";
 
 export class Application {
     readonly name: string = "Nyarch Updater";
@@ -30,6 +31,7 @@ export class Application {
             await this.handleFirstStart();
         }
 
+        this.qApplication.setStyleSheet(globalStyles);
         this.window = new MainWindow(this);
         this.window.show();
     }
@@ -40,5 +42,9 @@ export class Application {
         await this.keyManager.importKey().catch((err) => {
             console.error("Error importing GPG key on first start:", err);
         });
+    }
+
+    async checkForUpdates() {
+        return await this.updatesManager.checkNyarchUpdates();
     }
 }

@@ -22,7 +22,7 @@ export class MainWindow extends QMainWindow {
         this.setMinimumSize(500, 800);
         this.setCentralWidget(this.root);
 
-        this.root.addWidget(new MainPanel());
+        this.root.addWidget(new MainPanel(this.application));
 
         this.addEventListener(WidgetEventTypes.Close, () => {
             this.application.close();

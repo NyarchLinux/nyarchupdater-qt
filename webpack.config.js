@@ -67,6 +67,10 @@ module.exports = (_env, argv) => {
                             options: { name: '[name].[ext]' },
                         },
                     ],
+                },
+                {
+                    test: /\.(css|qss)$/,
+                    type: 'asset/source',
                 }
             ]
         },

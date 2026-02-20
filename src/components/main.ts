@@ -5,13 +5,15 @@ import {
     QWidget,
 } from "@nodegui/nodegui";
 import { UpdatesPanel } from "./updates-panel";
+import { Application } from "../application";
 
 export class MainPanel extends QWidget {
     panelLayout = new QBoxLayout(Direction.TopToBottom);
-    private updatesPanel = new UpdatesPanel();
+    private updatesPanel;
 
-    constructor() {
+    constructor(application: Application) {
         super();
+        this.updatesPanel = new UpdatesPanel(application);
         this.init();
     }
 

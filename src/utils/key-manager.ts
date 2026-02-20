@@ -1,6 +1,7 @@
 import { join } from "path";
 import { paths } from "./paths";
-import { exec } from "node:child_process";
+import { execFile } from "node:child_process";
+import { mkdir, rm } from "node:fs/promises";
 import { ASSETS_PATH } from "./constants";
 
 export class KeyManager {
@@ -11,15 +12,12 @@ export class KeyManager {
      * Imports the nyarch linux GPG key from the app data path using gpg.
      */
     async importKey() {
-        const command = `gpg --import "${this.path}"`;
         return new Promise<void>((resolve, reject) => {
-            exec(command, (error, stdout, stderr) => {
+            execFile("gpg", ["--import", this.path], (error) => {
                 if (error) {
                     reject(
                         new Error(`Error importing GPG key: ${error.message}`),
                     );
-                } else if (stderr) {
-                    reject(new Error(`Error importing GPG key: ${stderr}`));
                 } else {
                     resolve();
                 }
@@ -28,41 +26,51 @@ export class KeyManager {
     }
 
     /**
-     * Checks the GPG signature of the updates.json file by downloading it and verifying it with gpg. If the signature is valid, the promise resolves; otherwise, it rejects with an error.
+     * Downloads the updates.json file and its detached GPG signature (.sig),
+     * then verifies the signature using gpg.
      */
     async checkUpdatesSignature() {
-        const downloadUpdatesJSONCommand = `rm -f ${paths.cache}/updates.json && curl -L -o ${paths.cache}/updates.json ${this.updatesLink}`;
-        const verifySignatureCommand = `gpg --verify ${paths.cache}/updates.json`;
+        const updatesFile = join(paths.cache, "updates.json");
+        const signatureFile = join(paths.cache, "updates.json.sig");
 
-        return new Promise<void>((resolve, reject) => {
-            exec(downloadUpdatesJSONCommand, (downloadError) => {
-                if (downloadError) {
-                    // we include a "tag: " prefix to know what part of the process the error came from, since both commands can produce stderr output
-                    reject(
-                        new Error(
-                            `download: Error downloading updates.json: ${downloadError.message}`,
-                        ),
-                    );
-                    return;
-                }
+        await mkdir(paths.cache, { recursive: true });
+        await rm(updatesFile, { force: true });
+        await rm(signatureFile, { force: true });
 
-                exec(verifySignatureCommand, (verifyError, stdout, stderr) => {
-                    if (verifyError) {
+        await this.download(this.updatesLink, updatesFile);
+        await this.download(this.updatesLink + ".sig", signatureFile);
+
+        await new Promise<void>((resolve, reject) => {
+            execFile(
+                "gpg",
+                ["--verify", signatureFile, updatesFile],
+                (error) => {
+                    if (error) {
                         reject(
                             new Error(
-                                `verify: Error verifying GPG signature: ${verifyError.message}`,
-                            ),
-                        );
-                    } else if (stderr) {
-                        reject(
-                            new Error(
-                                `verify: GPG signature verification failed: ${stderr}`,
+                                `verify: GPG signature verification failed: ${error.message}`,
                             ),
                         );
                     } else {
                         resolve();
                     }
-                });
+                },
+            );
+        });
+    }
+
+    private download(url: string, dest: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            execFile("curl", ["-sfL", "-o", dest, url], (error) => {
+                if (error) {
+                    reject(
+                        new Error(
+                            `download: Error downloading ${url}: ${error.message}`,
+                        ),
+                    );
+                } else {
+                    resolve();
+                }
             });
         });
     }

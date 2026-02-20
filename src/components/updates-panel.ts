@@ -2,18 +2,23 @@ import {
     AlignmentFlag,
     Direction,
     QBoxLayout,
+    QButtonGroup,
     QFont,
     QLabel,
+    QPushButton,
     QWidget,
 } from "@nodegui/nodegui";
 import { UpdatesContainer } from "./updates-container";
+import { Application } from "../application";
 
 export class UpdatesPanel extends QWidget {
     panelLayout = new QBoxLayout(Direction.TopToBottom);
     private updatesContainer = new UpdatesContainer();
+    application: Application;
 
-    constructor() {
+    constructor(application: Application) {
         super();
+        this.application = application;
         this.init();
     }
 
@@ -43,6 +48,21 @@ export class UpdatesPanel extends QWidget {
         this.panelLayout.addLayout(box);
 
         this.panelLayout.addWidget(this.updatesContainer);
+
+        //make a button to click to check for updates
+        const buttonBox = new QPushButton();
+        buttonBox.setText("Check for updates");
+        buttonBox.setFixedWidth(150);
+        buttonBox.addEventListener("clicked", async () => {
+            const updates = await this.application
+                .checkForUpdates()
+                .catch((err: Error) => {
+                    console.error("Error checking for updates:", err);
+                });
+            console.log("Updates found:", updates);
+        });
+        this.panelLayout.addWidget(buttonBox, 0, AlignmentFlag.AlignHCenter);
+
         this.setLayout(this.panelLayout);
     }
 }

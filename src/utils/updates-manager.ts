@@ -2,6 +2,7 @@ import { Application } from "../application";
 import { readFile } from "node:fs/promises";
 import { paths } from "./paths";
 import { exec } from "node:child_process";
+import { join } from "node:path";
 
 interface UpdateError {
     type: "download" | "verify" | "unknown";
@@ -26,10 +27,10 @@ export class UpdatesManager {
      * It downloads the new updates.json file from Nyarch's servers containing all updates, verifies its GPG signature and then checks for updates.
      */
     async checkNyarchUpdates() {
-        const signCheckError = await this.application.keyManager
+        const downloadError = await this.application.keyManager
             .checkUpdatesSignature()
             .catch((err: Error) => {
-                console.error("Error checking updates signature:", err);
+                console.error("Error downloading updates file:", err);
                 const type = err.message.startsWith("download:")
                     ? "download"
                     : err.message.startsWith("verify:")
@@ -38,17 +39,18 @@ export class UpdatesManager {
                 return { type, message: err.message };
             });
 
-        if (signCheckError) {
-            this.handleUpdateError(signCheckError);
+        if (downloadError) {
+            this.handleUpdateError(downloadError);
             return;
         }
 
-        const raw = await readFile(paths.data + "/updates.json", "utf-8").catch(
-            (err: Error) => {
-                console.error("Error reading updates.json:", err);
-                return null;
-            },
-        );
+        const raw = await readFile(
+            join(paths.cache, "updates.json"),
+            "utf-8",
+        ).catch((err: Error) => {
+            console.error("Error reading updates.json:", err);
+            return null;
+        });
         const json: Record<string, string> | null = raw
             ? JSON.parse(raw)
             : null;
@@ -63,14 +65,9 @@ export class UpdatesManager {
         const currentVersion = await this.getCurrentVersion();
         const latestVersion = currentVersion ? json[currentVersion] : null;
 
-        if (!latestVersion) {
-            // weird case, do nothing
-            return;
-        }
-
         return {
             currentVersion,
-            latestVersion,
+            latestVersion: latestVersion || currentVersion, // if latestVersion is null, it is most likely because there is no update available
         };
     }
 

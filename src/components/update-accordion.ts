@@ -22,10 +22,12 @@ export class UpdateAccordion extends QWidget {
     private contentLayout = new QBoxLayout(Direction.TopToBottom);
     private expanded = false;
     private title: string;
+    private disabled = false;
 
     constructor(title = "Section") {
         super();
         this.title = title;
+        this.setObjectName("updateAccordion");
         this.init();
     }
 
@@ -39,11 +41,13 @@ export class UpdateAccordion extends QWidget {
         headerLayout.setSpacing(0);
 
         // Native arrow icon
+        this.arrow.setObjectName("accordionArrow");
         this.arrow.setArrowType(ArrowType.RightArrow);
         this.arrow.setFixedSize(20, 20);
         this.arrow.setEnabled(false); // just a visual indicator, clicks go to the whole header
 
         // Title label centered
+        this.titleLabel.setObjectName("accordionTitle");
         this.titleLabel.setText(this.title);
         this.titleLabel.setAlignment(AlignmentFlag.AlignCenter);
         const titleFont = new QFont("default", 10);
@@ -52,6 +56,7 @@ export class UpdateAccordion extends QWidget {
 
         headerLayout.addWidget(this.arrow);
         headerLayout.addWidget(this.titleLabel, 1); // stretch=1 to take remaining space
+        this.headerWidget.setObjectName("accordionHeader");
         this.headerWidget.setLayout(headerLayout);
         this.headerWidget.setCursor(CursorShape.PointingHandCursor);
         this.headerWidget.addEventListener(
@@ -60,10 +65,11 @@ export class UpdateAccordion extends QWidget {
         );
 
         // Content area (hidden by default)
+        this.content.setObjectName("accordionContent");
         this.contentLayout.setSpacing(4);
         this.contentLayout.setContentsMargins(14, 8, 14, 8);
         this.content.setLayout(this.contentLayout);
-        this.content.setFrameShape(Shape.StyledPanel);
+        this.content.setFrameShape(Shape.NoFrame);
         this.content.hide();
 
         this.mainLayout.addWidget(this.headerWidget);
@@ -72,13 +78,22 @@ export class UpdateAccordion extends QWidget {
     }
 
     private toggle() {
+        if (this.disabled) return;
         this.expanded = !this.expanded;
+
         if (this.expanded) {
             this.arrow.setArrowType(ArrowType.DownArrow);
             this.content.show();
+
+            this.headerWidget.setInlineStyle(`
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+        `);
         } else {
             this.arrow.setArrowType(ArrowType.RightArrow);
             this.content.hide();
+
+            this.headerWidget.setInlineStyle("");
         }
     }
 

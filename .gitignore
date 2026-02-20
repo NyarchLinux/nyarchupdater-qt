@@ -1,5 +1,6 @@
 dist
 .idea
+deploy/linux/build
 
 ### Node template
 # Logs
