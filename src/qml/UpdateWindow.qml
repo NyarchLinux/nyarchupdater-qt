@@ -7,46 +7,61 @@ Window {
     id: updateWindow
     width: 500
     height: 350
-    title: "Update"
+    title: "Nyarch Update"
 
-    onClosing: {
-        console.log("Update window closed. Re-checking for updates.");
-        backend.check_for_updates();
+    // Call this from outside to populate the carousel dynamically
+    function loadCommands(commands) {
+        stepsModel.clear()
+        for (var i = 0; i < commands.length; i++) {
+            stepsModel.append({
+                "label": commands[i].label || ("Step " + (i + 1)),
+                "cmd":   commands[i].cmd   || ""
+            })
+        }
+        carousel.currentIndex = 0
+    }
+
+    ListModel {
+        id: stepsModel
     }
 
     ColumnLayout {
         anchors.fill: parent
 
-        // The SwipeView acts as your Carousel
         Controls.SwipeView {
             id: carousel
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            /*Kirigami.Page {
-                Column {
-                    anchors.centerIn: parent
-                    Controls.Label { text: "Step 1: Refreshing pacman mirrors..." }
-                    Controls.BusyIndicator { running: true }
+            Repeater {
+                model: stepsModel
+
+                Kirigami.Page {
+                    ColumnLayout {
+                        anchors.centerIn: parent
+                        spacing: Kirigami.Units.largeSpacing
+
+                        Kirigami.Heading {
+                            level: 2
+                            text: model.label
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        Controls.Label {
+                            text: model.cmd
+                            font.family: "monospace"
+                            wrapMode: Text.Wrap
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        Controls.BusyIndicator {
+                            Layout.alignment: Qt.AlignHCenter
+                            running: true
+                            visible: carousel.currentIndex === index
+                        }
+                    }
                 }
             }
-
-            Kirigami.Page {
-                Column {
-                    anchors.centerIn: parent
-                    Controls.Label { text: "Step 2: Downloading packages..." }
-                    Controls.ProgressBar { value: 0.5 }
-                }
-            }
-
-            Kirigami.Page {
-                Column {
-                    anchors.centerIn: parent
-                    Controls.Label { text: "Step 3: Installing..." }
-                }
-            }*/
-
-            // Dynamically create pages based on the update steps in backend
         }
 
         Controls.PageIndicator {
