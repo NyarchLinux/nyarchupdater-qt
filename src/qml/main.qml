@@ -15,6 +15,10 @@ Kirigami.ApplicationWindow {
     width: minimumWidth
     height: minimumHeight
 
+    Component.onCompleted: {
+        UpdateManager.checkForUpdates()
+    }
+
     pageStack.initialPage: MainPage {}
     pageStack.columnView.columnResizeMode: Kirigami.ColumnView.SingleColumn
 

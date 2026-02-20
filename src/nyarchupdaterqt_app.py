@@ -3,13 +3,41 @@
 import os
 import sys
 import signal
+from pathlib import Path
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
+# noinspection PyUnresolvedReferences
 from KCoreAddons import KAboutData, KAboutLicense
-from update_manager import UpdateManager
+from constants import DATA_PATH, CONFIG_PATH, CACHE_PATH
+from keymanager import KeyManager
+from update_manager import UpdateManager  # noqa: F401
+
+_FIRST_START_FILE = Path(DATA_PATH) / "first-start"
+
+
+def _handle_first_start():
+    """Import GPG key on first start, then create a marker file."""
+    if not _FIRST_START_FILE.exists():
+        print("First start detected, importing GPG key…")
+        # noinspection PyUnresolvedReferences
+        KeyManager.import_key()
+        _FIRST_START_FILE.touch()
+    else:
+        print("Not first start, skipping key import.")
+
+def _ensure_filesystem():
+    """Ensure that all necessary directories exist."""
+    for path in [DATA_PATH, CONFIG_PATH, CACHE_PATH]:
+        if not path.exists():
+            print(f"Creating directory: {path}")
+            path.mkdir(parents=True, exist_ok=True)
+
 
 def main():
+    _handle_first_start()
+    _ensure_filesystem()
+
     app = QGuiApplication(sys.argv)
     app.setDesktopFileName("moe.nyarchlinux.nyarchupdaterqt")
 
@@ -52,7 +80,6 @@ def main():
         quit()
 
     app.exec()
-
 
 if __name__ == "__main__":
     main()
