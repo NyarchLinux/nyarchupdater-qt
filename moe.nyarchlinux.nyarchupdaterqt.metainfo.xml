@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>moe.nyarchlinux.nyarchupdaterqt</id>
+
+  <name>Nyarch Updater</name>
+  <summary>GUI App to update your Nyarch Linux system</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <developer id="moe.nyarchlinux">
+    <name>Nyarch Linux Team</name>
+  </developer>
+
+  <description>
+    <p>
+      Nyarch Updater is a graphical application for updating your Nyarch Linux system.
+      It provides a simple and user-friendly interface to check for and install system updates and most importantly, Nyarch Linux release updates.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">moe.nyarchlinux.nyarchupdaterqt.desktop</launchable>
+
+  <url type="homepage">https://nyarchlinux.moe</url>
+
+  <provides>
+    <binary>nyarchupdater</binary>
+  </provides>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2026-02-20">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
+</component>

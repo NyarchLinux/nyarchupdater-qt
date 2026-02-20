@@ -1,0 +1,11 @@
+{
+    "id": "moe.nyarchlinux.nyarchupdaterqt",
+    "name": "Nyarch Updater",
+    "summary": "GUI App to update your Nyarch Linux system",
+    "version": "0.1.0",
+    "url": "https://nyarchlinux.moe",
+    "license": "GPL-3.0-or-later",
+    "developer": {
+        "name": "Nyarch Linux Team"
+    }
+}
