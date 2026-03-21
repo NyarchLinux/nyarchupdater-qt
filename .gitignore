@@ -3,6 +3,8 @@ env
 
 # makepkg stuff during tests
 nyarchupdaterqt
+nyarchupdaterqt-1.0.0-1-any.pkg.tar.zst
+**/*/nyarchupdaterqt
 pkg
 
 ### Qt template

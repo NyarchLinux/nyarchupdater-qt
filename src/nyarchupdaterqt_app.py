@@ -64,6 +64,7 @@ def main():
     # Load the app icon from the SVG at the project root
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     app.setWindowIcon(QIcon(os.path.join(project_root, "moe.nyarchlinux.nyarchupdaterqt.svg")))
+    about_data.setProgramLogo(QIcon(os.path.join(project_root, "moe.nyarchlinux.nyarchupdaterqt.svg")))
 
     engine = QQmlApplicationEngine()
 
