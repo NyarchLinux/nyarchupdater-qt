@@ -3,7 +3,7 @@ pkgver=1.0.0
 pkgrel=1
 pkgdesc="A simple GUI app to keep your Nyarch Linux system up to date."
 arch=('any')
-url="https://github.com/NyarchLinux/nyarchupdaterqt"
+url="https://github.com/NyarchLinux/nyarchupdater-qt"
 license=('GPL')
 depends=(
     'python'
@@ -14,7 +14,7 @@ depends=(
     'qt6-svg'
 )
 makedepends=('git')
-#source=("nyarchupdaterqt::git+${url}.git")
+source=("nyarchupdaterqt::git+${url}.git")
 sha256sums=('SKIP')
 package() {
   install -d "${pkgdir}/usr/lib/${pkgname}"

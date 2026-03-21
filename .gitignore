@@ -1,6 +1,10 @@
 env
 .idea
 
+# makepkg stuff during tests
+nyarchupdaterqt
+pkg
+
 ### Qt template
 # C++ objects and libs
 *.slo
