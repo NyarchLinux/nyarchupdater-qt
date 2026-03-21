@@ -73,6 +73,7 @@ class UpdateManager(QObject):
     noUpdatesAvailable = Signal()
     errorOccurred = Signal(str)
     loadingChanged = Signal()
+    successChecked = Signal(str, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -117,3 +118,32 @@ class UpdateManager(QObject):
             pspawn(["konsole", "-e", "sudo pacman -Syu --noconfirm"])
         except RuntimeError as e:
             self.errorOccurred.emit(f"Arch update failed: {e}")
+
+    @Slot(str)
+    def executeCommand(self, command):
+        try:
+            pspawn(["konsole", "-e", "sudo", "sh", "-c", command])
+        except RuntimeError as e:
+            self.errorOccurred.emit(f"Command execution failed: {e}")
+
+    @Slot(str)
+    def checkSuccess(self, command):
+        import threading
+
+        def check_task():
+            print(f"Checking success for command: {command}")
+            final_command = command.replace("sudo", "pkexec")
+            
+            try:
+                output = spawn(["bash", "-c", final_command])
+                print(f"Check output: {output}")
+                
+                result = "true" in output.lower()
+                self.successChecked.emit(command, result)
+                
+            except RuntimeError as e:
+                print(f"Check command failed: {e}")
+                self.successChecked.emit(command, False)
+
+        thread = threading.Thread(target=check_task, daemon=True)
+        thread.start()

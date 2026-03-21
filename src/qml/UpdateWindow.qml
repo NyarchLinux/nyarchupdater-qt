@@ -11,11 +11,21 @@ Window {
     color: Kirigami.Theme.backgroundColor
 
     signal executeCommandRequested(string command)
-    signal checkSuccessRequested(string command)
+    signal checkSuccessRequested(string check_command)
 
-    function markSuccess(cmd) {
+    Connections {
+        target: UpdateManager
+        function onSuccessChecked(check_command, success) {
+            console.log("Success checked. Result:", success)
+            if (success) {
+                updateWindow.markSuccess(check_command)
+            }
+        }
+    }
+
+    function markSuccess(check_command) {
         for (let i = 0; i < stepsModel.count; i++) {
-            if (stepsModel.get(i).cmd === cmd) {
+            if (stepsModel.get(i).check_command === check_command) {
                 stepsModel.setProperty(i, "success", true);
                 return;
             }
@@ -32,7 +42,8 @@ Window {
                 "description": commands[i].description || "",
                 "image": commands[i].image || "",
                 "required": !commands[i].skippable || false,
-                "success": false
+                "success": false,
+                "check_command": commands[i].checksuccess || ""
             });
         }
         carousel.currentIndex = 0;
@@ -151,7 +162,7 @@ Window {
                                 icon.name: "task-complete"
                                 visible: model.required && !model.success
                                 highlighted: true
-                                onClicked: updateWindow.checkSuccessRequested(model.cmd)
+                                onClicked: updateWindow.checkSuccessRequested(model.check_command)
                             }
 
                             Controls.Button {
@@ -162,6 +173,54 @@ Window {
                                 onClicked: carousel.currentIndex = index + 1
                             }
                         }
+                    }
+                }
+            }
+
+            Item {
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: Kirigami.Units.largeSpacing
+                    spacing: Kirigami.Units.largeSpacing
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: "transparent"
+                        Kirigami.Icon {
+                            anchors.centerIn: parent
+                            source: "task-complete"
+                            width: 64; height: 64
+                        }
+                    }
+
+                    Kirigami.Heading {
+                        level: 2
+                        text: "All Steps Completed!"
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillHeight: false
+                    }
+
+                    Controls.Label {
+                        text: "You have successfully completed all the update steps."
+                        wrapMode: Text.Wrap
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
+                        Layout.maximumWidth: 400
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillHeight: false
+                    }
+
+                    Controls.Label {
+                        text: "You can close this window now."
+                        wrapMode: Text.Wrap
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
+                        Layout.maximumWidth: 400
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillHeight: false
                     }
                 }
             }

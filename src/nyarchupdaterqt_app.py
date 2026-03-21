@@ -4,7 +4,7 @@ import os
 import sys
 import signal
 from pathlib import Path
-from PySide6.QtCore import QUrl
+from PySide6.QtCore import QUrl, QObject
 from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 # noinspection PyUnresolvedReferences
@@ -78,6 +78,15 @@ def main():
 
     if len(engine.rootObjects()) == 0:
         quit()
+
+    root_object = engine.rootObjects()[0]
+    update_window = root_object.findChild(QObject, "updateWindow")
+
+    if update_window:
+        update_window.executeCommandRequested.connect(update_manager.executeCommand)
+        update_window.checkSuccessRequested.connect(update_manager.checkSuccess)
+    else:
+        print("Warning: Could not find updateWindow object to connect signals.")
 
     app.exec()
 

@@ -35,6 +35,7 @@ Kirigami.ApplicationWindow {
 
     UpdateWindow {
         id: updateWindow
+        objectName: "updateWindow"
     }
 
     ShowCommand {
