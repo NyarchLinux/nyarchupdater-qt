@@ -98,8 +98,8 @@ Kirigami.Page {
             icon.name: "system-run"
             visible: nyarchVersion.length > 0
             onClicked: {
-                myCarouselWindow.loadCommands(nyarchCommands)
-                myCarouselWindow.show()
+                updateWindow.loadCommands(nyarchCommands)
+                updateWindow.show()
             }
         }
 

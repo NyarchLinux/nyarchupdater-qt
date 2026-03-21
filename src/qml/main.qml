@@ -34,7 +34,11 @@ Kirigami.ApplicationWindow {
     }
 
     UpdateWindow {
-        id: myCarouselWindow
+        id: updateWindow
+    }
+
+    ShowCommand {
+        id: showCommandWindow
     }
 
     globalDrawer: Kirigami.GlobalDrawer

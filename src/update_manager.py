@@ -9,7 +9,6 @@ from keymanager import KeyManager
 QML_IMPORT_NAME = "moe.nyarchlinux.nyarchupdaterqt"
 QML_IMPORT_MAJOR_VERSION = 1
 
-
 class _CheckWorker(QThread):
     """Runs update checks off the main thread."""
     archResult = Signal(list)
@@ -61,7 +60,7 @@ class _CheckWorker(QThread):
             return
 
         version = latest.get("version", "unknown")
-        commands = latest.get("commands", [])
+        commands = latest.get("updates", [])
         self.nyarchResult.emit(version, commands)
 
 
