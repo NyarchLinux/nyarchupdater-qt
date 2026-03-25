@@ -8,7 +8,7 @@ QML_IMPORT_NAME = "moe.nyarchlinux.nyarchupdaterqt"
 QML_IMPORT_MAJOR_VERSION = 1
 
 _KEY_PATH = ASSETS_PATH / "public.asc"
-_UPDATES_JSON_LINK = "https://nyarchlinux.moe/update.json"
+_UPDATES_JSON_LINK = "https://nyarchlinux.moe/update_kde.json"
 _UPDATES_JSON_PATH = CACHE_PATH / "updates.json"
 _UPDATES_JSON_SIG_PATH = _UPDATES_JSON_PATH.with_name(_UPDATES_JSON_PATH.stem + ".json.sig")
 
